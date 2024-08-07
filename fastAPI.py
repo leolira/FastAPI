@@ -49,4 +49,12 @@ async def update_user(user_id: int,user:User):
     selected_user.age = user.age
     return selected_user, {"message":"User successfully updated!"}
 
-
+#delete user route
+@app.delete("/users/{user_id}")
+async def delete_user(user_id:int):
+    user = next((user for user in users if user.id == user_id),None)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    users.remove(user)
+    return {"message": "User successfully removed"}
+        

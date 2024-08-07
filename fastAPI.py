@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI(__name__)
 
 class Users(BaseModel):
     id: int
@@ -16,3 +16,10 @@ users = [
     Users(id=1, name="Leonardo", lastname="Amorim", age=42),
     Users(id=2, name="Luana", lastname="Menezes", age=35)
 ]
+
+@app.get("/users")
+async def list_users():
+    return users
+
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-app = FastAPI(__name__)
+app = FastAPI()
 
 class Users(BaseModel):
     id: int
@@ -17,9 +17,16 @@ users = [
     Users(id=2, name="Luana", lastname="Menezes", age=35)
 ]
 
+#list all users route
 @app.get("/users")
 async def list_users():
     return users
 
-if __name__ == "__main__":
-    app.run(debug=True)
+#show a user by id route
+@app.get("/users/{user_id}")
+async def get_user_byid(user_id: int):
+    user = next((u for u in users if u.id == user_id), None)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+

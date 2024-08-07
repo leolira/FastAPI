@@ -1,2 +1,2 @@
 # FastAPI
-Simple api using python and fastAPI
+Simple user api using python and fastAPI

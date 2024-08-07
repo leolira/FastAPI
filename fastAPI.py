@@ -38,5 +38,15 @@ async def create_user(user: User):
     users.append(user)
     return {"message":"User successfully created!"}
 
+#update user route
+@app.put("/users/{user_id}")
+async def update_user(user_id: int,user:User):
+    selected_user = next((user for user in users if user.id== user_id), None)
+    if selected_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    selected_user.name = user.name
+    selected_user.lastname = user.lastname
+    selected_user.age = user.age
+    return selected_user, {"message":"User successfully updated!"}
 
 

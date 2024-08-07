@@ -1,20 +1,21 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
-class Users(BaseModel):
-    id: int
+def id_generator():
+    return max(user.id for user in users)+1
+
+class User(BaseModel):
+    id: int = Field(default_factory=id_generator)
     name: str
     lastname: str
     age: int
 
-def id_generator():
-    return max(user['id'] for user in users)+1
 
 users = [
-    Users(id=1, name="Leonardo", lastname="Amorim", age=42),
-    Users(id=2, name="Luana", lastname="Menezes", age=35)
+    User(id=1, name="Leonardo", lastname="Amorim", age=42),
+    User(id=2, name="Luana", lastname="Menezes", age=35)
 ]
 
 #list all users route
@@ -29,4 +30,13 @@ async def get_user_byid(user_id: int):
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+#create user route
+@app.post("/users")
+async def create_user(user: User):
+    user.id = id_generator()
+    users.append(user)
+    return {"message":"User successfully created!"}
+
+
 
